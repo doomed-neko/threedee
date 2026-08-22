@@ -1,7 +1,4 @@
-use raylib::{
-    drawing::{RaylibDraw, RaylibDrawHandle},
-    ffi::Color,
-};
+use raylib_sys::{Color, DrawLineEx};
 
 use crate::vec::V2;
 
@@ -14,13 +11,13 @@ impl Shape {
     pub const fn new(verts: Vec<V2>, faces: Vec<Vec<V2>>) -> Self {
         Self { verts, faces }
     }
-    pub fn draw<T>(self, d: &mut RaylibDrawHandle, f: T)
+    pub fn draw<T>(self, f: T)
     where
         T: Fn(V2) -> V2,
     {
         self.faces.iter().for_each(|face| {
-            face.windows(2).for_each(|vert| {
-                d.draw_line_ex(f(vert[0]), f(vert[1]), 1., Color::GREEN);
+            face.windows(2).for_each(|vert| unsafe {
+                DrawLineEx(f(vert[0]).into(), f(vert[1]).into(), 1., Color::GREEN);
             });
         });
     }
@@ -49,10 +46,7 @@ pub fn cube() -> Shape {
     .into_iter()
     .map(|face| face.into_iter().map(|idx| verts[idx]).collect::<Vec<V2>>())
     .collect();
-    Shape {
-        verts: verts,
-        faces: faces,
-    }
+    Shape { verts, faces }
 }
 
 pub fn pyramid() -> Shape {
@@ -67,8 +61,5 @@ pub fn pyramid() -> Shape {
         .iter()
         .flat_map(|&i| verts.iter().map(move |&j| vec![i, j]))
         .collect();
-    Shape {
-        verts: verts,
-        faces: faces,
-    }
+    Shape { verts, faces }
 }

@@ -1,22 +1,32 @@
-use raylib::prelude::*;
+#![no_std]
+#![no_main]
+use core::f32::consts::PI;
+
+use raylib_sys::{
+    BeginDrawing, ClearBackground, Color, EndDrawing, SetTargetFPS, WindowShouldClose,
+};
 use threedee::{SCREEN_HEIGHT, SCREEN_WIDTH, shapes};
 
-fn main() {
-    let (mut rl, thread) = raylib::init()
-        .size(SCREEN_WIDTH, SCREEN_HEIGHT)
-        .title("3d bullshit")
-        .build();
+#[unsafe(no_mangle)]
+pub extern "C" fn main() {
+    unsafe {
+        raylib_sys::InitWindow(
+            SCREEN_WIDTH,
+            SCREEN_HEIGHT,
+            "3d bullshit".as_ptr() as *const i8,
+        );
 
-    let fps: f32 = 200.;
-    rl.set_target_fps(fps as u32);
-    let dt = 1. / fps;
-    let mut dr = 0.;
-    while !rl.window_should_close() {
-        dr += PI as f32 * dt;
-        let mut d = rl.begin_drawing(&thread);
-        d.clear_background(Color::BLACK);
-        shapes::pyramid().draw(&mut d, |vec| {
-            vec.rotate_xz(dr).translate_z(2.).project2d().screen_cords()
-        });
+        let fps: f32 = 200.;
+        SetTargetFPS(fps as i32);
+        let dt = 1. / fps;
+        let mut dr = 0.;
+        while !WindowShouldClose() {
+            dr += PI * dt;
+            BeginDrawing();
+            ClearBackground(Color::BLACK);
+            shapes::pyramid()
+                .draw(|vec| vec.rotate_xz(dr).translate_z(2.).project2d().screen_cords());
+            EndDrawing();
+        }
     }
 }

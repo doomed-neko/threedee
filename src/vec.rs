@@ -1,9 +1,6 @@
+use raylib_sys::{Color, DrawRectangleV, Vector2};
+
 use crate::{SCREEN_HEIGHT, SCREEN_WIDTH};
-use raylib::{
-    drawing::RaylibDraw,
-    drawing::RaylibDrawHandle,
-    ffi::{Color, Vector2},
-};
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct V2 {
@@ -49,8 +46,14 @@ impl V2 {
             z: self.x * s + self.z * c,
         }
     }
-    pub fn draw(&self, d: &mut RaylibDrawHandle) {
-        d.draw_rectangle_v(self, (Self::DRAW_SIZE, Self::DRAW_SIZE), Color::GREEN)
+    pub fn draw(self) {
+        unsafe {
+            DrawRectangleV(
+                self.into(),
+                Vector2::new(Self::DRAW_SIZE, Self::DRAW_SIZE),
+                Color::GREEN,
+            );
+        }
     }
 }
 impl From<&V2> for Vector2 {
