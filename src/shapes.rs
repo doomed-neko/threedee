@@ -63,17 +63,10 @@ pub fn pyramid() -> Shape {
         V2::new(0.5, -0.5, 0.5),
         V2::new(-0.5, -0.5, 0.5),
     ];
-    let faces = [
-        vec![0, 1, 2, 0],
-        vec![0, 3, 4, 0],
-        vec![1, 3],
-        vec![2, 4],
-        vec![1, 4],
-        vec![2, 3],
-    ]
-    .into_iter()
-    .map(|face| face.into_iter().map(|idx| verts[idx]).collect::<Vec<V2>>())
-    .collect();
+    let faces = verts
+        .iter()
+        .flat_map(|&i| verts.iter().map(move |&j| vec![i, j]))
+        .collect();
     Shape {
         verts: verts,
         faces: faces,
