@@ -4,7 +4,7 @@ use threedee::{
     SCREEN_HEIGHT, SCREEN_WIDTH,
     raylib::{
         BeginDrawing, ClearBackground, Color, DrawText, EndDrawing, InitWindow, IsKeyDown,
-        SetTargetFPS, WindowShouldClose,
+        KeyboardButton, SetTargetFPS, WindowShouldClose,
     },
     shapes,
 };
@@ -25,36 +25,42 @@ pub fn main() {
     let mut dx = 0.;
     let mut shape = shapes::pyramid();
     while !WindowShouldClose() {
-        if IsKeyDown(threedee::raylib::KeyboardButton::KeyD) {
+        if IsKeyDown(KeyboardButton::KeyD) {
             dy += PI * dt;
         }
-        if IsKeyDown(threedee::raylib::KeyboardButton::KeyA) {
+        if IsKeyDown(KeyboardButton::KeyA) {
             dy -= PI * dt;
         }
-        if IsKeyDown(threedee::raylib::KeyboardButton::KeyW) {
+        if IsKeyDown(KeyboardButton::KeyW) {
             dx += PI * dt;
         }
-        if IsKeyDown(threedee::raylib::KeyboardButton::KeyS) {
+        if IsKeyDown(KeyboardButton::KeyS) {
             dx -= PI * dt;
         }
-        if IsKeyDown(threedee::raylib::KeyboardButton::KeyQ) {
+        if IsKeyDown(KeyboardButton::KeyQ) {
             dz += PI * dt;
         }
-        if IsKeyDown(threedee::raylib::KeyboardButton::KeyE) {
+        if IsKeyDown(KeyboardButton::KeyE) {
             dz -= PI * dt;
         }
-        if IsKeyDown(threedee::raylib::KeyboardButton::KeyZ) {
+        if IsKeyDown(KeyboardButton::KeyZ) {
             dtz += 0.5 * dt;
         }
-        if IsKeyDown(threedee::raylib::KeyboardButton::KeyX) {
+        if IsKeyDown(KeyboardButton::KeyX) {
             dtz -= 0.5 * dt;
-            dtz = dtz.clamp(-0.4999999, f32::INFINITY);
+            dtz = dtz.clamp(-1.4999999, f32::INFINITY);
         }
-        if IsKeyDown(threedee::raylib::KeyboardButton::KeyOne) {
+        if IsKeyDown(KeyboardButton::KeyOne) {
             shape = shapes::cube();
         }
-        if IsKeyDown(threedee::raylib::KeyboardButton::KeyTwo) {
+        if IsKeyDown(KeyboardButton::KeyTwo) {
             shape = shapes::pyramid();
+        }
+        if IsKeyDown(KeyboardButton::KeySpace) {
+            dx = 0.;
+            dy = 0.;
+            dz = 0.;
+            dtz = 0.;
         }
         BeginDrawing();
         ClearBackground(Color::BLACK);
@@ -62,7 +68,7 @@ pub fn main() {
             vec.rotate_xz(dy)
                 .rotate_xy(dz)
                 .rotate_yz(dx)
-                .translate_z(1. + dtz)
+                .translate_z(2. + dtz)
                 .project2d()
                 .screen_cords()
         });

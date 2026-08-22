@@ -39,14 +39,15 @@ unsafe extern "C" {
 
 #[repr(C)]
 pub enum KeyboardButton {
-    KeyOne = 49, // Key: 1
-    KeyTwo = 50, // Key: 2
-    KeyA = 65,   // Key: A | a
-    KeyD = 68,   // Key: D | d
-    KeyE = 69,   // Key: E | e
-    KeyQ = 81,   // Key: Q | q
-    KeyS = 83,   // Key: S | s
-    KeyW = 87,   // Key: W | w
-    KeyX = 88,   // Key: X | x
-    KeyZ = 90,   // Key: Z | z
+    KeySpace = 32, // Key: Space
+    KeyOne = 49,   // Key: 1
+    KeyTwo = 50,   // Key: 2
+    KeyA = 65,     // Key: A | a
+    KeyD = 68,     // Key: D | d
+    KeyE = 69,     // Key: E | e
+    KeyQ = 81,     // Key: Q | q
+    KeyS = 83,     // Key: S | s
+    KeyW = 87,     // Key: W | w
+    KeyX = 88,     // Key: X | x
+    KeyZ = 90,     // Key: Z | z
 }
