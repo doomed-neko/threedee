@@ -19,6 +19,7 @@ pub fn main() {
     let fps: f32 = 200.;
     SetTargetFPS(fps as i32);
     let dt = 1. / fps;
+    let mut dtz = 0.;
     let mut dy = 0.;
     let mut dz = 0.;
     let mut dx = 0.;
@@ -42,6 +43,13 @@ pub fn main() {
         if IsKeyDown(threedee::raylib::KeyboardButton::KeyE) {
             dz -= PI * dt;
         }
+        if IsKeyDown(threedee::raylib::KeyboardButton::KeyZ) {
+            dtz += 0.5 * dt;
+        }
+        if IsKeyDown(threedee::raylib::KeyboardButton::KeyX) {
+            dtz -= 0.5 * dt;
+            dtz = dtz.clamp(-0.4999999, f32::INFINITY);
+        }
         if IsKeyDown(threedee::raylib::KeyboardButton::KeyOne) {
             shape = shapes::cube();
         }
@@ -54,12 +62,13 @@ pub fn main() {
             vec.rotate_xz(dy)
                 .rotate_xy(dz)
                 .rotate_yz(dx)
-                .translate_z(2.)
+                .translate_z(1. + dtz)
                 .project2d()
                 .screen_cords()
         });
         DrawText(
-            format!("x rotation: {dx}\ny rotation: {dy}\nz rotation: {dz}\0").as_ptr(),
+            format!("x rotation: {dx}\ny rotation: {dy}\nz rotation: {dz}\nz translation: {dtz}\0")
+                .as_ptr(),
             20,
             20,
             20,

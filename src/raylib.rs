@@ -47,4 +47,6 @@ pub enum KeyboardButton {
     KeyQ = 81,   // Key: Q | q
     KeyS = 83,   // Key: S | s
     KeyW = 87,   // Key: W | w
+    KeyX = 88,   // Key: X | x
+    KeyZ = 90,   // Key: Z | z
 }
