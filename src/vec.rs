@@ -1,6 +1,7 @@
-use raylib_sys::{Color, DrawRectangleV, Vector2};
-
-use crate::{SCREEN_HEIGHT, SCREEN_WIDTH};
+use crate::{
+    SCREEN_HEIGHT, SCREEN_WIDTH,
+    raylib::{Color, DrawRectangleV},
+};
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct V2 {
@@ -46,23 +47,29 @@ impl V2 {
             z: self.x * s + self.z * c,
         }
     }
-    pub fn draw(self) {
-        unsafe {
-            DrawRectangleV(
-                self.into(),
-                Vector2::new(Self::DRAW_SIZE, Self::DRAW_SIZE),
-                Color::GREEN,
-            );
+    pub fn to_vec(self) -> Vector2 {
+        Vector2 {
+            x: self.x,
+            y: self.y,
         }
     }
-}
-impl From<&V2> for Vector2 {
-    fn from(val: &V2) -> Self {
-        Vector2 { x: val.x, y: val.y }
+    pub fn draw(self) {
+        DrawRectangleV(
+            self.to_vec(),
+            Vector2::new(Self::DRAW_SIZE, Self::DRAW_SIZE),
+            Color::GREEN,
+        );
     }
 }
-impl From<V2> for Vector2 {
-    fn from(val: V2) -> Self {
-        Vector2 { x: val.x, y: val.y }
+
+#[repr(C)]
+pub struct Vector2 {
+    x: f32,
+    y: f32,
+}
+
+impl Vector2 {
+    pub fn new(x: f32, y: f32) -> Self {
+        Self { x, y }
     }
 }

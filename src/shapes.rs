@@ -1,6 +1,7 @@
-use raylib_sys::{Color, DrawLineEx};
-
-use crate::vec::V2;
+use crate::{
+    raylib::{Color, DrawLineEx},
+    vec::V2,
+};
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct Shape {
@@ -16,8 +17,8 @@ impl Shape {
         T: Fn(V2) -> V2,
     {
         self.faces.iter().for_each(|face| {
-            face.windows(2).for_each(|vert| unsafe {
-                DrawLineEx(f(vert[0]).into(), f(vert[1]).into(), 1., Color::GREEN);
+            face.windows(2).for_each(|vert| {
+                DrawLineEx(f(vert[0]).to_vec(), f(vert[1]).to_vec(), 3., Color::GREEN);
             });
         });
     }
