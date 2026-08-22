@@ -16,6 +16,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      - name: Add raylib PPA
+        if: runner.os == 'Linux'
+        run: |
+          sudo add-apt-repository \
+          ppa:texus/raylib -y
       - name: Install Linux Dependencies
         if: runner.os == 'Linux'
         run: |
