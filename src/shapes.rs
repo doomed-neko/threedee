@@ -52,7 +52,7 @@ pub fn cube() -> Shape {
 
 pub fn pyramid() -> Shape {
     let verts = vec![
-        V2::new(0., 1., 0.),
+        V2::new(0., 0.5, 0.),
         V2::new(0.5, -0.5, -0.5),
         V2::new(-0.5, -0.5, -0.5),
         V2::new(0.5, -0.5, 0.5),
