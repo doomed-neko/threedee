@@ -25,6 +25,7 @@ pub fn main() {
     let mut dy = 0.;
     let mut dz = 0.;
     let mut dx = 0.;
+    let mut shape = shapes::pyramid();
     while !WindowShouldClose() {
         if IsKeyDown(threedee::raylib::KeyboardButton::KeyD) {
             dy += PI * dt;
@@ -44,9 +45,15 @@ pub fn main() {
         if IsKeyDown(threedee::raylib::KeyboardButton::KeyE) {
             dz -= PI * dt;
         }
+        if IsKeyDown(threedee::raylib::KeyboardButton::KeyOne) {
+            shape = shapes::cube();
+        }
+        if IsKeyDown(threedee::raylib::KeyboardButton::KeyTwo) {
+            shape = shapes::pyramid();
+        }
         BeginDrawing();
         ClearBackground(Color::BLACK);
-        shapes::pyramid().draw(|vec| {
+        shape.draw(|vec| {
             vec.rotate_xz(dy)
                 .rotate_xy(dz)
                 .rotate_yz(dx)

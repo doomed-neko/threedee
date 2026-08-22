@@ -12,7 +12,7 @@ impl Shape {
     pub const fn new(verts: Vec<V2>, faces: Vec<Vec<V2>>) -> Self {
         Self { verts, faces }
     }
-    pub fn draw<T>(self, f: T)
+    pub fn draw<T>(&self, f: T)
     where
         T: Fn(V2) -> V2,
     {
