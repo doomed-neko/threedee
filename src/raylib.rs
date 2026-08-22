@@ -11,6 +11,7 @@ pub struct Color {
 impl Color {
     pub const GREEN: Color = Color::new(0, 128, 0, 255);
     pub const BLACK: Color = Color::new(0, 0, 0, 255);
+    pub const WHITE: Color = Color::new(255, 255, 255, 255);
     pub const fn new(r: u8, g: u8, b: u8, a: u8) -> Self {
         Self { r, g, b, a }
     }
@@ -18,11 +19,14 @@ impl Color {
 
 #[link(name = "raylib", kind = "dylib")]
 unsafe extern "C" {
-    pub safe fn InitWindow(
-        width: ::core::ffi::c_int,
-        height: ::core::ffi::c_int,
-        title: *const ::core::ffi::c_char,
-    );
+    pub safe fn InitWindow(width: i32, height: i32, title: *const ::core::ffi::c_char);
+    pub safe fn DrawText(
+        text: *const u8,
+        posX: i32,
+        posY: i32,
+        fontSize: ::core::ffi::c_int,
+        color: Color,
+    ); // Draw text (using default font)
     pub safe fn ClearBackground(color: Color);
     pub safe fn BeginDrawing();
     pub safe fn EndDrawing();
@@ -35,10 +39,12 @@ unsafe extern "C" {
 
 #[repr(C)]
 pub enum KeyboardButton {
-    KeyA = 65, // Key: A | a
-    KeyD = 68, // Key: D | d
-    KeyE = 69, // Key: E | e
-    KeyQ = 81, // Key: Q | q
-    KeyS = 83, // Key: S | s
-    KeyW = 87, // Key: W | w
+    KeyOne = 49, // Key: 1
+    KeyTwo = 50, // Key: 2
+    KeyA = 65,   // Key: A | a
+    KeyD = 68,   // Key: D | d
+    KeyE = 69,   // Key: E | e
+    KeyQ = 81,   // Key: Q | q
+    KeyS = 83,   // Key: S | s
+    KeyW = 87,   // Key: W | w
 }

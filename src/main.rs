@@ -1,17 +1,14 @@
-#![no_std]
-#![no_main]
 use core::f32::consts::PI;
 
 use threedee::{
     SCREEN_HEIGHT, SCREEN_WIDTH,
     raylib::{
-        BeginDrawing, ClearBackground, Color, EndDrawing, InitWindow, IsKeyDown, SetTargetFPS,
-        WindowShouldClose,
+        BeginDrawing, ClearBackground, Color, DrawText, EndDrawing, InitWindow, IsKeyDown,
+        SetTargetFPS, WindowShouldClose,
     },
     shapes,
 };
 
-#[unsafe(no_mangle)]
 pub fn main() {
     InitWindow(
         SCREEN_WIDTH,
@@ -61,6 +58,13 @@ pub fn main() {
                 .project2d()
                 .screen_cords()
         });
+        DrawText(
+            format!("x rotation: {dx}\ny rotation: {dy}\nz rotation: {dz}\0").as_ptr(),
+            20,
+            20,
+            20,
+            Color::WHITE,
+        );
         EndDrawing();
     }
 }
