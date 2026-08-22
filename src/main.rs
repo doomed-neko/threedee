@@ -5,7 +5,7 @@ use core::f32::consts::PI;
 use threedee::{
     SCREEN_HEIGHT, SCREEN_WIDTH,
     raylib::{
-        BeginDrawing, ClearBackground, Color, EndDrawing, InitWindow, SetTargetFPS,
+        BeginDrawing, ClearBackground, Color, EndDrawing, InitWindow, IsKeyDown, SetTargetFPS,
         WindowShouldClose,
     },
     shapes,
@@ -22,12 +22,38 @@ pub fn main() {
     let fps: f32 = 200.;
     SetTargetFPS(fps as i32);
     let dt = 1. / fps;
-    let mut dr = 0.;
+    let mut dy = 0.;
+    let mut dz = 0.;
+    let mut dx = 0.;
     while !WindowShouldClose() {
-        dr += PI * dt;
+        if IsKeyDown(threedee::raylib::KeyboardButton::KeyD) {
+            dy += PI * dt;
+        }
+        if IsKeyDown(threedee::raylib::KeyboardButton::KeyA) {
+            dy -= PI * dt;
+        }
+        if IsKeyDown(threedee::raylib::KeyboardButton::KeyW) {
+            dx += PI * dt;
+        }
+        if IsKeyDown(threedee::raylib::KeyboardButton::KeyS) {
+            dx -= PI * dt;
+        }
+        if IsKeyDown(threedee::raylib::KeyboardButton::KeyQ) {
+            dz += PI * dt;
+        }
+        if IsKeyDown(threedee::raylib::KeyboardButton::KeyE) {
+            dz -= PI * dt;
+        }
         BeginDrawing();
         ClearBackground(Color::BLACK);
-        shapes::pyramid().draw(|vec| vec.rotate_xz(dr).translate_z(2.).project2d().screen_cords());
+        shapes::pyramid().draw(|vec| {
+            vec.rotate_xz(dy)
+                .rotate_xy(dz)
+                .rotate_yz(dx)
+                .translate_z(2.)
+                .project2d()
+                .screen_cords()
+        });
         EndDrawing();
     }
 }

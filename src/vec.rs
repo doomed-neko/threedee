@@ -47,6 +47,24 @@ impl V2 {
             z: self.x * s + self.z * c,
         }
     }
+    pub fn rotate_xy(self, angle: f32) -> Self {
+        let s = angle.sin();
+        let c = angle.cos();
+        Self {
+            x: self.x * c - self.y * s,
+            y: self.x * s + self.y * c,
+            z: self.z,
+        }
+    }
+    pub fn rotate_yz(self, angle: f32) -> Self {
+        let s = angle.sin();
+        let c = angle.cos();
+        Self {
+            x: self.x,
+            y: self.z * s + self.y * c,
+            z: self.z * c - self.y * s,
+        }
+    }
     pub fn to_vec(self) -> Vector2 {
         Vector2 {
             x: self.x,

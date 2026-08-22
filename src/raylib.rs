@@ -30,4 +30,15 @@ unsafe extern "C" {
     pub safe fn WindowShouldClose() -> bool;
     pub safe fn DrawLineEx(startPos: Vector2, endPos: Vector2, thick: f32, color: Color);
     pub safe fn DrawRectangleV(position: Vector2, size: Vector2, color: Color);
+    pub safe fn IsKeyDown(key: KeyboardButton) -> bool;
+}
+
+#[repr(C)]
+pub enum KeyboardButton {
+    KeyA = 65, // Key: A | a
+    KeyD = 68, // Key: D | d
+    KeyE = 69, // Key: E | e
+    KeyQ = 81, // Key: Q | q
+    KeyS = 83, // Key: S | s
+    KeyW = 87, // Key: W | w
 }
