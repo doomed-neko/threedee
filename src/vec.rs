@@ -1,3 +1,5 @@
+use std::ops::{Add, Sub};
+
 use crate::{
     SCREEN_HEIGHT, SCREEN_WIDTH,
     raylib::{Color, DrawRectangleV},
@@ -80,6 +82,7 @@ impl V2 {
     }
 }
 
+#[derive(Clone, Copy, Debug, PartialEq)]
 #[repr(C)]
 pub struct Vector2 {
     x: f32,
@@ -89,5 +92,29 @@ pub struct Vector2 {
 impl Vector2 {
     pub fn new(x: f32, y: f32) -> Self {
         Self { x, y }
+    }
+}
+
+impl Add for V2 {
+    type Output = Self;
+
+    fn add(self, rhs: Self) -> Self::Output {
+        Self {
+            x: self.x + rhs.x,
+            y: self.y + rhs.y,
+            z: self.z + rhs.z,
+        }
+    }
+}
+
+impl Sub for V2 {
+    type Output = Self;
+
+    fn sub(self, rhs: Self) -> Self::Output {
+        Self {
+            x: self.x - rhs.x,
+            y: self.y - rhs.y,
+            z: self.z - rhs.z,
+        }
     }
 }
