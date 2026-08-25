@@ -1,17 +1,18 @@
-use std::ops::{Add, Sub};
+use std::ops::{Add, Mul, Neg, Sub};
 
 use crate::{
     SCREEN_HEIGHT, SCREEN_WIDTH,
     raylib::{Color, DrawRectangleV},
 };
 
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub struct V2 {
+#[derive(Clone, Copy, Debug, PartialEq, PartialOrd)]
+pub struct Vec3 {
     pub x: f32,
     pub y: f32,
     pub z: f32,
 }
-impl V2 {
+impl Vec3 {
+    pub const ZEROED: Self = Self::new(0., 0., 0.);
     const DRAW_SIZE: f32 = 10.;
     pub const fn new(x: f32, y: f32, z: f32) -> Self {
         Self { x, y, z }
@@ -67,6 +68,16 @@ impl V2 {
             z: self.z * c - self.y * s,
         }
     }
+    pub fn cross_product(&self, rhs: Self) -> Self {
+        Self {
+            x: self.y * rhs.z - self.z * rhs.y,
+            y: self.z * rhs.x - self.x - rhs.z,
+            z: self.x * rhs.y - self.y * rhs.z,
+        }
+    }
+    pub fn dot_product(self, rhs: Self) -> f32 {
+        (self.x * rhs.x) + (self.y * rhs.y) + (self.z * rhs.z)
+    }
     pub fn to_vec(self) -> Vector2 {
         Vector2 {
             x: self.x,
@@ -95,7 +106,7 @@ impl Vector2 {
     }
 }
 
-impl Add for V2 {
+impl Add for Vec3 {
     type Output = Self;
 
     fn add(self, rhs: Self) -> Self::Output {
@@ -107,7 +118,7 @@ impl Add for V2 {
     }
 }
 
-impl Sub for V2 {
+impl Sub for Vec3 {
     type Output = Self;
 
     fn sub(self, rhs: Self) -> Self::Output {
@@ -115,6 +126,18 @@ impl Sub for V2 {
             x: self.x - rhs.x,
             y: self.y - rhs.y,
             z: self.z - rhs.z,
+        }
+    }
+}
+
+impl Neg for Vec3 {
+    type Output = Self;
+
+    fn neg(self) -> Self::Output {
+        Self {
+            x: -self.x,
+            y: -self.y,
+            z: -self.z,
         }
     }
 }

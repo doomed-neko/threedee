@@ -1,20 +1,20 @@
 use crate::{
     raylib::{Color, DrawLineEx, DrawTriangle},
-    vec::{V2, Vector2},
+    vec::{Vec3, Vector2},
 };
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct Shape {
-    pub verts: Vec<V2>,
-    pub faces: Vec<Vec<V2>>,
+    pub verts: Vec<Vec3>,
+    pub faces: Vec<Vec<Vec3>>,
 }
 impl Shape {
-    pub const fn new(verts: Vec<V2>, faces: Vec<Vec<V2>>) -> Self {
+    pub const fn new(verts: Vec<Vec3>, faces: Vec<Vec<Vec3>>) -> Self {
         Self { verts, faces }
     }
     pub fn draw<T>(&self, f: T)
     where
-        T: Fn(V2) -> V2,
+        T: Fn(Vec3) -> Vec3,
     {
         let colors = [
             Color::YELLOW,
@@ -29,15 +29,38 @@ impl Shape {
 
         let mut i = 0;
         self.faces.iter().for_each(|face| {
-            let pts: Vec<Vector2> = face.iter().map(|&v| f(v).to_vec()).collect();
-            if pts.len() >= 4 {
-                draw_triangle_double_sided(pts[0], pts[1], pts[2], colors[i % 8]);
-                draw_triangle_double_sided(pts[0], pts[2], pts[3], colors[i % 8]);
-            } else if pts.len() >= 3 {
-                draw_triangle_double_sided(pts[0], pts[1], pts[2], colors[i % 23]);
-            }
-            for vert in face.windows(2) {
-                DrawLineEx(f(vert[0]).to_vec(), f(vert[1]).to_vec(), 3.0, Color::GREEN);
+            let v0 = f(face[0]);
+            let v1 = f(face[1]);
+            let v2 = f(face[2]);
+            let l = Vec3::new(0., 0., 01.);
+            let n = (v1 - v0).cross_product(v2 - v0);
+            if l.dot_product(-n) >= 0. {
+                let pts: Vec<Vector2> = face
+                    .iter()
+                    .map(|&v| f(v).project2d().screen_cords().to_vec())
+                    .collect();
+                pts.chunks_exact(4).for_each(|pts| {
+                    draw_triangle_double_sided(
+                        pts[0],
+                        pts[2],
+                        pts[3],
+                        colors[i / 100 % colors.len()],
+                    );
+                    draw_triangle_double_sided(
+                        pts[0],
+                        pts[1],
+                        pts[2],
+                        colors[i / 100 % colors.len()],
+                    );
+                });
+                // if pts.len() >= 4 {
+                //     draw_triangle_double_sided(pts[0], pts[2], pts[3], colors[i % colors.len()]);
+                // } else if pts.len() >= 3 {
+                //     draw_triangle_double_sided(pts[0], pts[1], pts[2], colors[i % colors.len()]);
+                // }
+                // for vert in pts.windows(2) {
+                // DrawLineEx(vert[0], vert[1], 3.0, Color::GREEN);
+                // }
             }
             i += 1;
         });
@@ -50,15 +73,15 @@ fn draw_triangle_double_sided(v1: Vector2, v2: Vector2, v3: Vector2, color: Colo
 }
 pub fn cube() -> Shape {
     let verts = vec![
-        V2::new(0.5, 0.5, 0.5),
-        V2::new(-0.5, 0.5, 0.5),
-        V2::new(-0.5, -0.5, 0.5),
-        V2::new(0.5, -0.5, 0.5),
+        Vec3::new(0.5, 0.5, 0.5),
+        Vec3::new(-0.5, 0.5, 0.5),
+        Vec3::new(-0.5, -0.5, 0.5),
+        Vec3::new(0.5, -0.5, 0.5),
         //
-        V2::new(0.5, 0.5, -0.5),
-        V2::new(-0.5, 0.5, -0.5),
-        V2::new(-0.5, -0.5, -0.5),
-        V2::new(0.5, -0.5, -0.5),
+        Vec3::new(0.5, 0.5, -0.5),
+        Vec3::new(-0.5, 0.5, -0.5),
+        Vec3::new(-0.5, -0.5, -0.5),
+        Vec3::new(0.5, -0.5, -0.5),
     ];
     let faces = [
         vec![0, 1, 2, 3, 0], // Front
@@ -69,18 +92,22 @@ pub fn cube() -> Shape {
         vec![1, 5, 6, 2, 1], // Left
     ]
     .into_iter()
-    .map(|face| face.into_iter().map(|idx| verts[idx]).collect::<Vec<V2>>())
+    .map(|face| {
+        face.into_iter()
+            .map(|idx| verts[idx])
+            .collect::<Vec<Vec3>>()
+    })
     .collect();
     Shape { verts, faces }
 }
 
 pub fn pyramid() -> Shape {
     let verts = vec![
-        V2::new(0.0, 0.5, 0.0),    // 0: Top Apex
-        V2::new(0.5, -0.5, -0.5),  // 1: Back-Right
-        V2::new(-0.5, -0.5, -0.5), // 2: Back-Left
-        V2::new(0.5, -0.5, 0.5),   // 3: Front-Right
-        V2::new(-0.5, -0.5, 0.5),  // 4: Front-Left
+        Vec3::new(0.0, 0.5, 0.0),    // 0: Top Apex
+        Vec3::new(0.5, -0.5, -0.5),  // 1: Back-Right
+        Vec3::new(-0.5, -0.5, -0.5), // 2: Back-Left
+        Vec3::new(0.5, -0.5, 0.5),   // 3: Front-Right
+        Vec3::new(-0.5, -0.5, 0.5),  // 4: Front-Left
     ];
 
     let faces = [
@@ -91,7 +118,11 @@ pub fn pyramid() -> Shape {
         vec![0, 4, 3, 0],    // Front Side (Triangle)
     ]
     .into_iter()
-    .map(|face| face.into_iter().map(|idx| verts[idx]).collect::<Vec<V2>>())
+    .map(|face| {
+        face.into_iter()
+            .map(|idx| verts[idx])
+            .collect::<Vec<Vec3>>()
+    })
     .collect();
 
     Shape { verts, faces }
@@ -99,8 +130,8 @@ pub fn pyramid() -> Shape {
 
 #[derive(Clone, Debug, PartialEq, Default)]
 pub struct MeshBuilder {
-    pub verts: Vec<V2>,
-    pub faces: Vec<Vec<V2>>,
+    pub verts: Vec<Vec3>,
+    pub faces: Vec<Vec<Vec3>>,
 }
 
 impl MeshBuilder {
@@ -111,13 +142,13 @@ impl MeshBuilder {
         }
     }
 
-    pub fn add_vertex(&mut self, v: V2) -> usize {
+    pub fn add_vertex(&mut self, v: Vec3) -> usize {
         self.verts.push(v);
         self.verts.len() - 1
     }
 
     pub fn add_face(&mut self, indices: &[usize]) {
-        let mut face_verts: Vec<V2> = indices.iter().map(|&idx| self.verts[idx]).collect();
+        let mut face_verts: Vec<Vec3> = indices.iter().map(|&idx| self.verts[idx]).collect();
         if let Some(&first) = face_verts.first() {
             face_verts.push(first);
         }
@@ -140,8 +171,8 @@ pub fn regular_prism(sides: usize, radius: f32, height: f32) -> Shape {
         let angle = 2.0 * std::f32::consts::PI * (i as f32) / (sides as f32);
         let x = radius * angle.cos();
         let z = radius * angle.sin();
-        builder.add_vertex(V2::new(x, half_h, z));
-        builder.add_vertex(V2::new(x, -half_h, z));
+        builder.add_vertex(Vec3::new(x, half_h, z));
+        builder.add_vertex(Vec3::new(x, -half_h, z));
     }
 
     let top_cap: Vec<usize> = (0..sides).map(|i| i * 2).collect();

@@ -75,7 +75,7 @@ pub fn main() {
         }
         if IsKeyPressed(KeyboardButton::KeyMinus) {
             sides -= 1;
-            sides = sides.max(1);
+            sides = sides.max(2);
             shape = shapes::regular_prism(sides, radius, height);
         }
 
@@ -119,8 +119,6 @@ pub fn main() {
                 .rotate_xy(dz)
                 .rotate_yz(dx)
                 .translate_z(2. + dtz)
-                .project2d()
-                .screen_cords()
         });
         DrawText(
             format!("x rotation: {dx}\ny rotation: {dy}\nz rotation: {dz}\nz translation: {dtz}\0")
